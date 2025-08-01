@@ -25,28 +25,24 @@ class LLMSelector:
         prompt = base_prompt.replace("{history}", json.dumps(history, indent=2)).replace("{tools}", json.dumps(self.tools, indent=2))
 
         response = self.client.chat.completions.create(
-            model="meta-llama/llama-4-scout-17b-16e-instruct",
+            model="llama-3.1-8b-instant", # Changed model to a more general tool-calling model
             messages=[{"role": "user", "content": prompt}],
             temperature=0
         )
         
         raw = response.choices[0].message.content.strip()
-        tool_calls = [] 
+        print(f"LLM Raw Response: {raw}")
+        tool_calls = []
 
         try:
-            data = json.loads(raw)
-            
-            if isinstance(data, dict) and "tool_calls" in data:
-                potential_calls = data["tool_calls"]
-            elif isinstance(data, list):
-                potential_calls = data
-            else:
-                potential_calls = []
-
-            if isinstance(potential_calls, list):
-                tool_calls = [call for call in potential_calls if isinstance(call, dict)]
-
-        except json.JSONDecodeError:
+            # Find the start and end of the JSON list
+            start_index = raw.find('[')
+            end_index = raw.rfind(']') + 1
+            json_str = raw[start_index:end_index]
+            tool_calls = json.loads(json_str)
+        except (json.JSONDecodeError, IndexError):
+            # Handle cases where the response is not a valid JSON
+            print("Error: Could not decode LLM response as JSON.")
             pass
 
         return tool_calls

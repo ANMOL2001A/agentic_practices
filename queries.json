@@ -1,0 +1,70 @@
+[
+    {
+        "description": "Test: Get best supplier for part 'alpha'",
+        "query": "best supplier for part alpha",
+        "expected_tool_calls": [
+            {
+                "name": "get_best_supplier",
+                "arguments": { "part_name": "alpha" }
+            }
+        ],
+        "tool_results": [
+            {"role": "tool", "tool_name": "get_best_supplier", "content": "{'name': 'Supplier C', 'risk': 0.05, 'quality': 99, 'price': 525, 'source': 'website_one'}"}
+        ],
+        "expected_final_answer": "The best supplier for part 'alpha' is Supplier C, with a risk of 0.05, quality of 99, and price of 525. This supplier was found on website_one."
+    },
+    {
+        "description": "Test: Get best price for part 'beta'",
+        "query": "cheapest price for part beta",
+        "expected_tool_calls": [
+            {
+                "name": "get_best_price",
+                "arguments": { "part_name": "beta" }
+            }
+        ],
+        "tool_results": [
+            {"role": "tool", "tool_name": "get_best_price", "content": "{'name': 'Supplier D', 'risk': 0.2, 'quality': 92, 'price': 480, 'source': 'website_one'}"}
+        ],
+        "expected_final_answer": "The cheapest price for part 'beta' is 480, offered by Supplier D, found on website_one."
+    },
+    {
+        "description": "Test: Get full report for part 'gamma'",
+        "query": "full report for part gamma",
+        "expected_tool_calls": [
+            {
+                "name": "get_report",
+                "arguments": { "part_name": "gamma" }
+            }
+        ],
+        "tool_results": [
+            {"role": "tool", "tool_name": "get_report", "content": "Analysis for gamma:\n\nA total of 5 suppliers were considered, sourced from our database and two external websites.\nThe chosen supplier is 'Supplier C' (from website_one) primarily due to its outstandingly low risk profile of 0.05.\n\nComparison with other suppliers:\n- 'Supplier A' (from database) had a risk of 0.1.\n- 'Supplier B' (from database) had a risk of 0.3.\n- 'Supplier D' (from website_one) had a risk of 0.2.\n- 'Supplier E' (from website_two) had a risk of 0.5.\n\nConclusion: While other suppliers might offer slightly different prices, the significantly lower risk associated with 'Supplier C' makes it the most reliable choice for this part."}
+        ],
+        "expected_final_answer": "Here is the full report for part 'gamma': Analysis for gamma:\n\nA total of 5 suppliers were considered, sourced from our database and two external websites.\nThe chosen supplier is 'Supplier C' (from website_one) primarily due to its outstandingly low risk profile of 0.05.\n\nComparison with other suppliers:\n- 'Supplier A' (from database) had a risk of 0.1.\n- 'Supplier B' (from database) had a risk of 0.3.\n- 'Supplier D' (from website_one) had a risk of 0.2.\n- 'Supplier E' (from website_two) had a risk of 0.5.\n\nConclusion: While other suppliers might offer slightly different prices, the significantly lower risk associated with 'Supplier C' makes it the most reliable choice for this part."
+    },
+    {
+        "description": "Test: Parallel calls for best price and best supplier for part 'delta'",
+        "query": "best price and best supplier for part delta",
+        "expected_tool_calls": [
+            {
+                "name": "get_best_price",
+                "arguments": { "part_name": "delta" }
+            },
+            {
+                "name": "get_best_supplier",
+                "arguments": { "part_name": "delta" }
+            }
+        ],
+        "tool_results": [
+            {"role": "tool", "tool_name": "get_best_price", "content": "{'name': 'Supplier D', 'risk': 0.2, 'quality': 92, 'price': 480, 'source': 'website_one'}"},
+            {"role": "tool", "tool_name": "get_best_supplier", "content": "{'name': 'Supplier C', 'risk': 0.05, 'quality': 99, 'price': 525, 'source': 'website_one'}"}
+        ],
+        "expected_final_answer": "For part 'delta', the best price is 480 from Supplier D (website_one). The best supplier is Supplier C (website_one) with the lowest risk of 0.05."
+    },
+    {
+        "description": "Test: Query with missing part name",
+        "query": "best supplier",
+        "expected_tool_calls": [],
+        "tool_results": [],
+        "expected_final_answer": "I couldn't determine which tool to use based on your query. Please be more specific."
+    }
+]

@@ -7,8 +7,10 @@ from llm_selector import LLMSelector
 load_dotenv()
 
 def main():
-    # NOTE: It is best practice to use environment variables for API keys.
     api_key = os.getenv("GROQ_API_KEY")
+    if not api_key:
+        raise ValueError("GROQ_API_KEY not found in .env file")
+
     llm_selector = LLMSelector(api_key)
 
     user_query = input("Ask your question: ")
